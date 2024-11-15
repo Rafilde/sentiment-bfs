@@ -1,4 +1,4 @@
-# SentimentFlow
+# SentimentBFS
 
 Este projeto realiza a análise de sentimentos de comentários em português, separando-os em grupos de **comentários positivos** e **negativos**. Ele utiliza lematização para processar o texto e aplica o algoritmo BFS (Busca em Largura) para organizar os dados que serão enviados ao frontend.
 
