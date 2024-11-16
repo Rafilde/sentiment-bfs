@@ -1,12 +1,9 @@
-import spacy
 import json
 from IAnalyze import ia_query
+from bfs import bfs_execution
 import time
 import google.generativeai as genai
 from flask import Flask
-
-# Carregar modelo do SpaCy para o português (se necessário)
-nlp = spacy.load("pt_core_news_sm")
 
 # Caminho do arquivo JSON
 file_path = 'candy_comments.json'
@@ -49,6 +46,7 @@ def main():
     result = {
         'comments': updated_data_json,
         'most_common_sentiments': sentiment,
+        'bsf': 'teste',
     }
 
     return json.dumps(result, ensure_ascii=False, indent=4)
