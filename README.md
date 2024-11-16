@@ -1,14 +1,22 @@
 # SentimentBFS
-
-Este projeto realiza a análise de sentimentos de comentários em português, separando-os em grupos de **comentários positivos** e **negativos**. Ele utiliza lematização para processar o texto e aplica o algoritmo BFS (Busca em Largura) para organizar os dados que serão enviados ao frontend.
+> EM DESENVOLVIMENTO ⚠️🚨
+***
 
 ## Tecnologias Utilizadas
 
-- **Python**: Linguagem de programação base do projeto.
-- **Flask**: Framework web para criar e gerenciar o servidor.
-- **SpaCy**: Biblioteca para processamento de linguagem natural (NLP) utilizada para lematização e análise em português.
+### Front-End
++ Next.js
++ Typescript
++ TailwindCSS
 
----
+### Back-End
++ **Python**: Linguagem de programação base do projeto.
++ **Flask**: Framework web para criar e gerenciar o servidor.
++ **SpaCy**: Biblioteca para processamento de linguagem natural (NLP) utilizada para lematização e análise em português.
+
+
+## Padrões de Commit:
+Para o Desenvolvimento desse projeto foi adotado esses padrõs de commit: [Clique aqui](https://github.com/iuricode/padroes-de-commits).
 
 ## Instalação
 
