@@ -18,7 +18,8 @@ Certifique-se de ter o Python 3.7 ou superior instalado no seu ambiente. [Baixe 
 ### 2. Instale as libs
 1. Instale as dependências:
    ```bash
-   pip install flask spacy
+   pip install flask spacy python-dotenv
+   pip install -q -U google-generativeai
    ```
 2. Baixe o modelo de idioma para português no SpaCy
    ```bash
