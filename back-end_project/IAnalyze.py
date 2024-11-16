@@ -14,15 +14,22 @@ generation_config = {
   "top_k": 80,
 }
 
+safe_security = {
+  "HARASSEMENT": "BLOCK_NONE",  # Remover filtro sobre conteúdo de assédio
+  "HATE": "BLOCK_NONE",         # Remover filtro sobre conteúdo de ódio
+  "SEXUAL": "BLOCK_NONE",       # Remover filtro sobre conteúdo sexual
+  "DANGEROUS": "BLOCK_NONE"     # Remover filtro sobre conteúdo perigoso
+}
+
 model = genai.GenerativeModel(
   model_name="gemini-1.5-pro",
   generation_config=generation_config,
+  safety_settings=safe_security,
   system_instruction="Analise o sentimento do seguinte comentário com base no conteúdo e contexto apresentados. Determine se o sentimento geral é positivo, neutro, ou negativo.\n    Considere os seguintes critérios:\n\n    Positivo: O comentário demonstra emoções positivas, como alegria, satisfação ou aprovação.\n    Neutro: O comentário é informativo ou objetivo, sem expressar sentimentos claros ou emocionais.\n    Negativo: O comentário transmite insatisfação, crítica, tristeza ou outras emoções negativas.\n    Retorne apenas uma palavra indicando o sentimento detectado: Positivo, Neutro ou Negativo.",
 )
 
 chat_session = model.start_chat(
-  history=[
-  ]
+  history=[]
 )
 
 def consulta_IA(text):
