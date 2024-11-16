@@ -13,7 +13,7 @@
 + **Python**: Linguagem de programação base do projeto.
 + **Flask**: Framework web para criar e gerenciar o servidor.
 + **SpaCy**: Biblioteca para processamento de linguagem natural (NLP) utilizada para lematização e análise em português.
-
++ **Google IA Studio**: IA responsável por fazer a análise de sentimentos de cada comentário
 
 ## Padrões de Commit:
 Para o Desenvolvimento desse projeto foi adotado esses padrõs de commit: [Clique aqui](https://github.com/iuricode/padroes-de-commits).
