@@ -1,0 +1,21 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html,body{
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  width: 100%;
+  font-family: Arial, sans-serif;
+  background-color: var(--color-background);
+  color: var(--color-text);
+}
+
+:root{
+  --primary: #4a90e2;             /* Azul claro */
+  --secondary: #50e3c2;           /* Verde água suave */
+  --accent: #f5a623;              /* Laranja pastel */
+  --backgroundcolor: #f8f8f8;     /* Cinza muito claro para o fundo */
+  --textcolor: #4a4a4a;           /* Cinza escuro para o texto */
+}
