@@ -9,19 +9,42 @@ def build_graph(comments):
     graph = {}
 
     for comment in comments:
-        # Tokenizar o comentário
         doc = nlp(comment)
-        words = [token.text.lower() for token in doc if not token.is_stop and not token.is_punct]
+        words = [token.lemma_.lower() for token in doc if not token.is_stop and not token.is_punct and not token.is_space]
 
         # Criar conexões entre as palavras
         for i in range(len(words)):
             if words[i] not in graph:
                 graph[words[i]] = set()
             for j in range(i+1, len(words)):
+                if words[j] not in graph:
+                    graph[words[j]] = set()
                 graph[words[i]].add(words[j])
                 graph[words[j]].add(words[i])
 
     return graph
+
+#def build_graph(comments):
+    #graph = {}
+
+    #for comment in comments:
+        #doc = nlp(comment)
+        #words = [token.lemma_.lower() for token in doc if not token.is_stop and not token.is_punct and not token.is_space]
+
+        #for i in range(len(words) - 1):  # Conectar palavras sequenciais
+            #word1 = words[i]
+            #word2 = words[i + 1]
+
+            #if word1 not in graph:
+                #graph[word1] = set()
+            #if word2 not in graph:
+                #graph[word2] = set()
+
+
+            #graph[word1].add(word2)
+            #graph[word2].add(word1)
+
+    #return graph
 
 # Função para realizar o BFS e encontrar palavras relacionadas à palavra raiz
 def bfs_algorithm(graph, start_word):
@@ -45,15 +68,23 @@ def bfs_algorithm(graph, start_word):
 
     return related_words
 
-def bfs_execution(data_json):
+def bfs_execution():
     # Construir o grafo de palavras
-    graph = build_graph(data_json)
+    graph = build_graph([
+        "Eu gosto de programar em Python e Java.",
+        "Python é uma linguagem de programação poderosa.",
+        "Java também é muito popular entre os desenvolvedores."
+    ])
+
+    print(graph)
 
     # Palavra raiz para buscar suas palavras relacionadas
-    root_word = "sabor"
+    root_word = "python"
 
     # Realizar o BFS a partir da palavra raiz
     related_words = bfs_algorithm(graph, root_word)
 
     # Exibir as palavras relacionadas
     print(f"Palavras relacionadas à '{root_word}':", related_words)
+
+bfs_execution()

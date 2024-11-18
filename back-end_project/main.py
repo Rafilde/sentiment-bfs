@@ -1,6 +1,6 @@
 import json
 import google.generativeai as genai
-from flask import Flask
+from flask import Flask, jsonify
 from json_utils import load_json
 from text_analysis import sentiment_analysis_feedback, analyze_comments, analysis_of_the_most_common_words
 from bfs import bfs_execution
@@ -8,7 +8,9 @@ from bfs import bfs_execution
 # Caminho do arquivo JSON
 file_path = 'event_feedback.json'
 
-def main():
+app = Flask(__name__)
+
+def process_data():
     # Carregar e processar o arquivo JSON
     data = load_json(file_path)
 
@@ -27,9 +29,15 @@ def main():
         'most_common_words': common_words,
     }
 
-    return json.dumps(result, ensure_ascii=False, indent=4)
+    return result
 
-print(main())
+@app.route('/feedback', methods=['GET'])
+def get_feedback():
+    result = process_data()
+    return jsonify(result)
+
+if __name__ == '__main__':
+    app.run(debug=True)
 
 
 
