@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -7,15 +9,41 @@ html,body{
   padding: 0;
   height: 100%;
   width: 100%;
-  font-family: Arial, sans-serif;
+  font-family: "Poppins", sans-serif;
   background-color: var(--color-background);
   color: var(--color-text);
 }
 
 :root{
-  --primary: #4a90e2;             /* Azul claro */
-  --secondary: #50e3c2;           /* Verde água suave */
-  --accent: #f5a623;              /* Laranja pastel */
-  --backgroundcolor: #f8f8f8;     /* Cinza muito claro para o fundo */
-  --textcolor: #4a4a4a;           /* Cinza escuro para o texto */
+  --primary: #FFD54F;             /* Amarelo Médio */
+  --secondary: #FFB74D;           /* Laranja Suave */
+  --accent: #F57C00;              /* Laranja Escuro */
+  --backgroundcolor: #FFF8E1;     /* Amarelo Clarinho */
+  --textcolor: #6D6D6D;           /* Cinza Suave */
+}
+
+@keyframes bounce-slow {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-20px);
+  }
+}
+
+@keyframes pulse-slow {
+  0%, 100% {
+    opacity: 0.3;
+  }
+  50% {
+    opacity: 0.4;
+  }
+}
+
+.animate-bounce-slow {
+  animation: bounce-slow 5s infinite;
+}
+
+.animate-pulse-slow {
+  animation: pulse-slow 6s infinite;
 }

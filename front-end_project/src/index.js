@@ -1,11 +1,11 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
+import RouterController from './controllers/routerController';
 import './views/styles/global.css';
-import App from './views/pages/main';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
-    <App />
+    <RouterController />
   </React.StrictMode>
 );
