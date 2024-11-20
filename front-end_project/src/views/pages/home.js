@@ -1,5 +1,5 @@
 import React, { useState, useRef } from 'react';
-import {useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 const Home = () => {
     const [selectedFile, setSelectedFile] = useState(null);
@@ -42,7 +42,7 @@ const Home = () => {
                 console.log('Arquivo xlsx arrastado:', file);
             } else {
                 setSelectedFile(null);
-                alert('Por favor, arraste apenas um arquivo xlsx.');
+                alert('Por favor, arraste apenas um arquivo XLSX.');
             }
         }
     };
@@ -53,9 +53,9 @@ const Home = () => {
 
     const handleContinueClick = () => {
         if (selectedFile) {
-            // @TODO: refatorar para passar o arquivo .XLSX para o backend, transformar em JSON e refatorar a lógica de processamento com a IA, paralelamente, criar um nova página de "loading" em quanto o códiogo está sendo processado.
+            // @TODO: refatorar para passar o arquivo .XLSX para o backend, transformar em JSON e processar os dados de locais e distâncias.
 
-            navigate('/dashboard')
+            navigate('/dashboard');
         } else {
             console.log('Nenhum arquivo selecionado.');
         }
@@ -67,11 +67,11 @@ const Home = () => {
             <div className="absolute bottom-[-70px] right-[-70px] w-96 h-96 bg-secondary rounded-full opacity-40 animate-pulse-slow"></div>
             <div className="max-w-lg w-full bg-white shadow-lg rounded-lg p-8 relative z-10">
                 <h1 className="text-4xl font-bold text-center text-accent mb-4">
-                    Analise de Sentimentos
+                    Distâncias entre Locais
                 </h1>
 
                 <p className="text-center text-textcolor mb-6">
-                    Faça o upload de um arquivo XLSX para analisarmos os sentimentos contidos nos dados.
+                    Faça o upload de um arquivo XLSX contendo informações de locais e as distâncias entre eles.
                 </p>
 
                 <div

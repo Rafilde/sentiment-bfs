@@ -6,6 +6,6 @@ def load_json(file_path):
         return json.load(file)
 
 def write_json(file_path, data):
-    with open(file_path, 'w', encoding="utf-8") as comments_file:
-        return json.dump(data, comments_file, indent=4)
+    with open(file_path, 'w', encoding="utf-8") as file:
+        return json.dump(data, file, indent=4, ensure_ascii=False)
 
