@@ -1,5 +1,7 @@
 import React, { useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import axios from 'axios';
 
 const Home = () => {
@@ -12,10 +14,10 @@ const Home = () => {
         const file = event.target.files[0];
         if (file && file.type === 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet') {
             setSelectedFile(file);
-            console.log('Arquivo XLSX selecionado:', file);
+            toast.success('Arquivo selecionado com sucesso!')
         } else {
             setSelectedFile(null);
-            alert('Por favor, selecione um arquivo XLSX.');
+            toast.error('Arquivo em formato incompatível!');
         }
     };
 
@@ -41,10 +43,10 @@ const Home = () => {
             console.log('Tipo de arquivo:', file.type);  
             if (file.type === 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet') {
                 setSelectedFile(file);
-                console.log('Arquivo XLSX arrastado:', file);
+                toast.success('Arquivo selecionado com sucesso!')
             } else {
                 setSelectedFile(null);
-                alert('Por favor, arraste apenas um arquivo XLSX.');
+                toast.error('Arraste apenas um arquivo no formato XLSX.');
             }
         }
     };
@@ -66,11 +68,11 @@ const Home = () => {
                 });
                 navigate('/dashboard');
             } catch (error) {
-                console.error('Erro ao enviar o arquivo:', error);
-                alert(`Erro ao enviar o arquivo. ${error}`);
+                // console.error('Erro ao enviar o arquivo:', error);
+                toast.error('Erro ao enviar o arquivo.');
             }
         } else {
-            console.log('Nenhum arquivo selecionado.');
+            toast.error('Nehum arquivo selecionado.')
         }
     };
 
@@ -78,6 +80,7 @@ const Home = () => {
         <div className="flex flex-col items-center justify-center min-h-screen p-4 relative overflow-hidden bg-backgroundcolor">
             <div className="absolute top-[-50px] left-[-50px] w-64 h-64 bg-primary rounded-full opacity-30 animate-bounce-slow"></div>
             <div className="absolute bottom-[-70px] right-[-70px] w-96 h-96 bg-secondary rounded-full opacity-40 animate-pulse-slow"></div>
+            <ToastContainer position='bottom-right' autoClose={4000}  />
             <div className="max-w-lg w-full bg-white shadow-lg rounded-lg p-8 relative z-10">
                 <h1 className="text-4xl font-bold text-center text-accent mb-4">
                     Distâncias entre Locais
