@@ -9,9 +9,9 @@ const Filters = () => {
           id="initial-destination"
           className="w-full border border-gray-300 rounded-md p-2 text-textcolor hover:border-primary focus:outline-none focus:ring focus:ring-primary"
         >
-          <option>Sanduíche</option>
-          <option>Salada</option>
-          <option>Bebida</option>
+          <option>Beach park</option>
+          <option>Centro de eventos</option>
+          <option>Praia do futuro</option>
         </select>
       </div>
       <div className='mb-4'>
@@ -20,9 +20,9 @@ const Filters = () => {
           id="final-destination"
           className="w-full border border-gray-300 rounded-md p-2 text-textcolor hover:border-primary focus:outline-none focus:ring focus:ring-primary"
         >
-          <option>Sanduíche</option>
-          <option>Salada</option>
-          <option>Bebida</option>
+          <option>Beach park</option>
+          <option>Centro de eventos</option>
+          <option>Praia do futuro</option>
         </select>
       </div>
     </div>
