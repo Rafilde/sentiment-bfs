@@ -1,38 +1,17 @@
 import json
-from IAnalyze import ia_query
-from bfs import bfs_execution
-import time
 import google.generativeai as genai
-from flask import Flask
+from flask import Flask, jsonify
+from json_utils import load_json, write_json
+from text_analysis import sentiment_analysis_feedback, analyze_comments, analysis_of_the_most_common_words
+from bfs import execution_graph
 
 # Caminho do arquivo JSON
 file_path = 'candy_comments.json'
+comments_file_path = 'comments.json'
 
-# Função para processar os comentários e enviar para IA
-def analyze_comments(data):
-    data_string = json.dumps(data, ensure_ascii=False, indent=4)
-    analysis_result = ia_query(data_string)
-    return analysis_result
+app = Flask(__name__)
 
-# Função para carregar o arquivo JSON
-def load_json(file_path):
-    with open(file_path, 'r', encoding="utf-8") as file:
-        return json.load(file)
-
-# Função para ver qual ou quais são os sentimentos que mais apareceram
-def sentiment_analysis_feedback(updated_data_json):
-    sentiment_count = {'Positivo': 0, 'Neutro': 0, 'Negativo': 0}
-
-    for data in updated_data_json:
-        analyzed = data.get('analyzed')
-        if analyzed in sentiment_count:
-            sentiment_count[analyzed] += 1
-
-    max_count = max(sentiment_count.values())
-    most_common_sentiments = [sentiment for sentiment, count in sentiment_count.items() if count == max_count]
-    return most_common_sentiments
-
-def main():
+def process_data():
     # Carregar e processar o arquivo JSON
     data = load_json(file_path)
 
@@ -40,18 +19,36 @@ def main():
     updated_data = analyze_comments(data)
     updated_data_json = json.loads(updated_data)
 
+    word_graph = execution_graph(updated_data_json)
+    # Salvar o grafo de comentários em outro arquivo JSON
+    write_json(comments_file_path, word_graph)
+
     # Função para ver qual ou quais são os sentimentos que mais apareceram
     sentiment = sentiment_analysis_feedback(updated_data_json)
+
+    common_words = analysis_of_the_most_common_words(updated_data_json)
 
     result = {
         'comments': updated_data_json,
         'most_common_sentiments': sentiment,
-        'bsf': 'teste',
+        'most_common_words': common_words,
     }
 
-    return json.dumps(result, ensure_ascii=False, indent=4)
+    return result
 
-print(main())
+@app.route('/comments', methods=['GET'])
+def get_comments():
+    with open(comments_file_path, 'r') as comments_file:
+        comments = json.load(comments_file)
+    return jsonify(comments)
+
+@app.route('/feedback', methods=['GET'])
+def get_feedback():
+    result = process_data()
+    return jsonify(result)
+
+if __name__ == '__main__':
+    app.run(debug=True)
 
 
 
