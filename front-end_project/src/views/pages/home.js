@@ -1,23 +1,24 @@
 import React, { useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ToastContainer, toast } from 'react-toastify';
+import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import axios from 'axios';
+import { validateFile, uploadFile, notifySuccess, notifyError } from '../../controllers/fileController';
+import { FileModel } from '../../models/fileModel';
 
 const Home = () => {
-    const [selectedFile, setSelectedFile] = useState(null);
+    const [fileModel, setFileModel] = useState(new FileModel(null));
     const [dragActive, setDragActive] = useState(false);
     const inputRef = useRef(null);
     const navigate = useNavigate();
 
     const handleFileChange = (event) => {
         const file = event.target.files[0];
-        if (file && file.type === 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet') {
-            setSelectedFile(file);
-            toast.success('Arquivo selecionado com sucesso!')
+        if (validateFile(file)) {
+            setFileModel(new FileModel(file));
+            notifySuccess('Arquivo selecionado com sucesso!');
         } else {
-            setSelectedFile(null);
-            toast.error('Arquivo em formato incompatível!');
+            setFileModel(new FileModel(null));
+            notifyError('Arquivo em formato incompatível!');
         }
     };
 
@@ -40,13 +41,12 @@ const Home = () => {
     
         if (event.dataTransfer.files && event.dataTransfer.files[0]) {
             const file = event.dataTransfer.files[0];
-            console.log('Tipo de arquivo:', file.type);  
-            if (file.type === 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet') {
-                setSelectedFile(file);
-                toast.success('Arquivo selecionado com sucesso!')
+            if (validateFile(file)) {
+                setFileModel(new FileModel(file));
+                notifySuccess('Arquivo selecionado com sucesso!');
             } else {
-                setSelectedFile(null);
-                toast.error('Arraste apenas um arquivo no formato XLSX.');
+                setFileModel(new FileModel(null));
+                notifyError('Arraste apenas um arquivo no formato XLSX.');
             }
         }
     };
@@ -56,23 +56,15 @@ const Home = () => {
     };
 
     const handleContinueClick = async () => {
-        if (selectedFile) {
-            const formData = new FormData();
-            formData.append('file', selectedFile);
-
-            try {
-                await axios.post('http://127.0.0.1:5000/upload', formData, {
-                    headers: {
-                        'Content-Type': 'multipart/form-data',
-                    },
-                });
+        if (fileModel.getFile()) {
+            const result = await uploadFile(fileModel.getFile());
+            if (result.success) {
                 navigate('/dashboard');
-            } catch (error) {
-                // console.error('Erro ao enviar o arquivo:', error);
-                toast.error('Erro ao enviar o arquivo.');
+            } else {
+                notifyError(result.error);
             }
         } else {
-            toast.error('Nehum arquivo selecionado.')
+            notifyError('Nenhum arquivo selecionado.');
         }
     };
 
@@ -80,7 +72,7 @@ const Home = () => {
         <div className="flex flex-col items-center justify-center min-h-screen p-4 relative overflow-hidden bg-backgroundcolor">
             <div className="absolute top-[-50px] left-[-50px] w-64 h-64 bg-primary rounded-full opacity-30 animate-bounce-slow"></div>
             <div className="absolute bottom-[-70px] right-[-70px] w-96 h-96 bg-secondary rounded-full opacity-40 animate-pulse-slow"></div>
-            <ToastContainer position='bottom-right' autoClose={4000}  />
+            <ToastContainer position='bottom-right' autoClose={4000} />
             <div className="max-w-lg w-full bg-white shadow-lg rounded-lg p-8 relative z-10">
                 <h1 className="text-4xl font-bold text-center text-accent mb-4">
                     Distâncias entre Locais
@@ -116,10 +108,10 @@ const Home = () => {
                     <p className="text-textcolor text-center">ou arraste um arquivo XLSX aqui</p>
                 </div>
 
-                {selectedFile && (
+                {fileModel.getFile() && (
                     <div className="mt-6 text-center">
                         <p className="text-textcolor font-medium">
-                            Arquivo selecionado: <span className="text-accent">{selectedFile.name}</span>
+                            Arquivo selecionado: <span className="text-accent">{fileModel.getFile().name}</span>
                         </p>
                     </div>
                 )}
@@ -127,9 +119,9 @@ const Home = () => {
                 <div className="flex justify-center mt-8">
                     <button
                         onClick={handleContinueClick}
-                        disabled={!selectedFile}
+                        disabled={!fileModel.getFile()}
                         className={`py-3 px-8 font-bold rounded-lg transition-all duration-300 ease-in-out transform ${
-                            selectedFile
+                            fileModel.getFile()
                                 ? 'bg-primary text-white hover:bg-secondary shadow-lg hover:scale-105 active:scale-95'
                                 : 'bg-gray-300 text-gray-500 cursor-not-allowed'
                         }`}
