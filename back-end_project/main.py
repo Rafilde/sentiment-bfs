@@ -34,8 +34,8 @@ def upload_file():
         file.save(filename)
 
         destination_dictionary = read_xlsx_and_create_dictionary(filename)
-        destination_dictionary_json = build_city_graph(destination_dictionary)
-        write_json(json_data_destination, destination_dictionary_json)
+        destination_graph_json = build_city_graph(destination_dictionary)
+        write_json(json_data_destination, destination_graph_json)
 
         return jsonify(destination_dictionary)
 
