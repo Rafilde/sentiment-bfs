@@ -9,12 +9,12 @@ const Home = () => {
 
     const handleFileChange = (event) => {
         const file = event.target.files[0];
-        if (file && file.type === 'text/csv') {
+        if (file && file.type === 'text/xlsx') {
             setSelectedFile(file);
-            console.log('Arquivo CSV selecionado:', file);
+            console.log('Arquivo XLSX selecionado:', file);
         } else {
             setSelectedFile(null);
-            alert('Por favor, selecione um arquivo CSV.');
+            alert('Por favor, selecione um arquivo XLSX.');
         }
     };
 
@@ -37,12 +37,12 @@ const Home = () => {
 
         if (event.dataTransfer.files && event.dataTransfer.files[0]) {
             const file = event.dataTransfer.files[0];
-            if (file.type === 'text/csv') {
+            if (file.type === 'text/xlsx') {
                 setSelectedFile(file);
-                console.log('Arquivo CSV arrastado:', file);
+                console.log('Arquivo xlsx arrastado:', file);
             } else {
                 setSelectedFile(null);
-                alert('Por favor, arraste apenas um arquivo CSV.');
+                alert('Por favor, arraste apenas um arquivo xlsx.');
             }
         }
     };
@@ -53,7 +53,7 @@ const Home = () => {
 
     const handleContinueClick = () => {
         if (selectedFile) {
-            // @TODO: refatorar para passar o arquivo .CSV para o backend, transformar em JSON e refatorar a lógica de processamento com a IA, paralelamente, criar um nova página de "loading" em quanto o códiogo está sendo processado.
+            // @TODO: refatorar para passar o arquivo .XLSX para o backend, transformar em JSON e refatorar a lógica de processamento com a IA, paralelamente, criar um nova página de "loading" em quanto o códiogo está sendo processado.
 
             navigate('/dashboard')
         } else {
@@ -71,7 +71,7 @@ const Home = () => {
                 </h1>
 
                 <p className="text-center text-textcolor mb-6">
-                    Faça o upload de um arquivo CSV para analisarmos os sentimentos contidos nos dados.
+                    Faça o upload de um arquivo XLSX para analisarmos os sentimentos contidos nos dados.
                 </p>
 
                 <div
@@ -85,7 +85,7 @@ const Home = () => {
                     <input
                         type="file"
                         ref={inputRef}
-                        accept=".csv"
+                        accept=".xlsx"
                         onChange={handleFileChange}
                         className="hidden"
                     />
@@ -97,7 +97,7 @@ const Home = () => {
                         Faça Upload
                     </button>
 
-                    <p className="text-textcolor text-center">ou arraste um arquivo CSV aqui</p>
+                    <p className="text-textcolor text-center">ou arraste um arquivo XLSX aqui</p>
                 </div>
 
                 {selectedFile && (
