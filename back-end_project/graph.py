@@ -1,3 +1,4 @@
+#Aqui a gente cria o grafo das cidades
 def build_city_graph(data):
     graph = {}
 
