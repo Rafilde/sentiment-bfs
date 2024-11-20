@@ -1,20 +1,24 @@
 import React, { useState, useRef } from 'react';
-import {useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import { validateFile, uploadFile, notifySuccess, notifyError } from '../../controllers/fileController';
+import { FileModel } from '../../models/fileModel';
 
 const Home = () => {
-    const [selectedFile, setSelectedFile] = useState(null);
+    const [fileModel, setFileModel] = useState(new FileModel(null));
     const [dragActive, setDragActive] = useState(false);
     const inputRef = useRef(null);
     const navigate = useNavigate();
 
     const handleFileChange = (event) => {
         const file = event.target.files[0];
-        if (file && file.type === 'text/csv') {
-            setSelectedFile(file);
-            console.log('Arquivo CSV selecionado:', file);
+        if (validateFile(file)) {
+            setFileModel(new FileModel(file));
+            notifySuccess('Arquivo selecionado com sucesso!');
         } else {
-            setSelectedFile(null);
-            alert('Por favor, selecione um arquivo CSV.');
+            setFileModel(new FileModel(null));
+            notifyError('Arquivo em formato incompatível!');
         }
     };
 
@@ -34,30 +38,33 @@ const Home = () => {
         event.preventDefault();
         event.stopPropagation();
         setDragActive(false);
-
+    
         if (event.dataTransfer.files && event.dataTransfer.files[0]) {
             const file = event.dataTransfer.files[0];
-            if (file.type === 'text/csv') {
-                setSelectedFile(file);
-                console.log('Arquivo CSV arrastado:', file);
+            if (validateFile(file)) {
+                setFileModel(new FileModel(file));
+                notifySuccess('Arquivo selecionado com sucesso!');
             } else {
-                setSelectedFile(null);
-                alert('Por favor, arraste apenas um arquivo CSV.');
+                setFileModel(new FileModel(null));
+                notifyError('Arraste apenas um arquivo no formato XLSX.');
             }
         }
     };
-
+    
     const handleButtonClick = () => {
         inputRef.current.click();
     };
 
-    const handleContinueClick = () => {
-        if (selectedFile) {
-            // @TODO: refatorar para passar o arquivo .CSV para o backend, transformar em JSON e refatorar a lógica de processamento com a IA, paralelamente, criar um nova página de "loading" em quanto o códiogo está sendo processado.
-
-            navigate('/dashboard')
+    const handleContinueClick = async () => {
+        if (fileModel.getFile()) {
+            const result = await uploadFile(fileModel.getFile());
+            if (result.success) {
+                navigate('/dashboard');
+            } else {
+                notifyError(result.error);
+            }
         } else {
-            console.log('Nenhum arquivo selecionado.');
+            notifyError('Nenhum arquivo selecionado.');
         }
     };
 
@@ -65,13 +72,14 @@ const Home = () => {
         <div className="flex flex-col items-center justify-center min-h-screen p-4 relative overflow-hidden bg-backgroundcolor">
             <div className="absolute top-[-50px] left-[-50px] w-64 h-64 bg-primary rounded-full opacity-30 animate-bounce-slow"></div>
             <div className="absolute bottom-[-70px] right-[-70px] w-96 h-96 bg-secondary rounded-full opacity-40 animate-pulse-slow"></div>
+            <ToastContainer position='bottom-right' autoClose={4000} />
             <div className="max-w-lg w-full bg-white shadow-lg rounded-lg p-8 relative z-10">
                 <h1 className="text-4xl font-bold text-center text-accent mb-4">
-                    Analise de Sentimentos
+                    Distâncias entre Locais
                 </h1>
 
                 <p className="text-center text-textcolor mb-6">
-                    Faça o upload de um arquivo CSV para analisarmos os sentimentos contidos nos dados.
+                    Faça o upload de um arquivo XLSX contendo informações de locais e as distâncias entre eles.
                 </p>
 
                 <div
@@ -85,7 +93,7 @@ const Home = () => {
                     <input
                         type="file"
                         ref={inputRef}
-                        accept=".csv"
+                        accept=".xlsx"
                         onChange={handleFileChange}
                         className="hidden"
                     />
@@ -97,13 +105,13 @@ const Home = () => {
                         Faça Upload
                     </button>
 
-                    <p className="text-textcolor text-center">ou arraste um arquivo CSV aqui</p>
+                    <p className="text-textcolor text-center">ou arraste um arquivo XLSX aqui</p>
                 </div>
 
-                {selectedFile && (
+                {fileModel.getFile() && (
                     <div className="mt-6 text-center">
                         <p className="text-textcolor font-medium">
-                            Arquivo selecionado: <span className="text-accent">{selectedFile.name}</span>
+                            Arquivo selecionado: <span className="text-accent">{fileModel.getFile().name}</span>
                         </p>
                     </div>
                 )}
@@ -111,9 +119,9 @@ const Home = () => {
                 <div className="flex justify-center mt-8">
                     <button
                         onClick={handleContinueClick}
-                        disabled={!selectedFile}
+                        disabled={!fileModel.getFile()}
                         className={`py-3 px-8 font-bold rounded-lg transition-all duration-300 ease-in-out transform ${
-                            selectedFile
+                            fileModel.getFile()
                                 ? 'bg-primary text-white hover:bg-secondary shadow-lg hover:scale-105 active:scale-95'
                                 : 'bg-gray-300 text-gray-500 cursor-not-allowed'
                         }`}

@@ -1,57 +1,51 @@
 import json
-from IAnalyze import ia_query
-from bfs import bfs_execution
-import time
 import google.generativeai as genai
-from flask import Flask
+from flask import Flask, request, jsonify
+from flask_cors import CORS
+from json_utils import load_json, write_json
+from text_analysis import sentiment_analysis_feedback, analyze_comments, analysis_of_the_most_common_words
+from read_xlsx import read_xlsx_and_create_dictionary
+import os
 
-# Caminho do arquivo JSON
-file_path = 'candy_comments.json'
+app = Flask(__name__)
 
-# Função para processar os comentários e enviar para IA
-def analyze_comments(data):
-    data_string = json.dumps(data, ensure_ascii=False, indent=4)
-    analysis_result = ia_query(data_string)
-    return analysis_result
+app.config['UPLOAD_FOLDER'] = 'uploads'
+ALLOWED_EXTENSIONS = {'xlsx'}
+CORS(app)
 
-# Função para carregar o arquivo JSON
-def load_json(file_path):
-    with open(file_path, 'r', encoding="utf-8") as file:
-        return json.load(file)
+json_data_destination = 'destination_data.json'
 
-# Função para ver qual ou quais são os sentimentos que mais apareceram
-def sentiment_analysis_feedback(updated_data_json):
-    sentiment_count = {'Positivo': 0, 'Neutro': 0, 'Negativo': 0}
+def allowed_file(filename):
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
-    for data in updated_data_json:
-        analyzed = data.get('analyzed')
-        if analyzed in sentiment_count:
-            sentiment_count[analyzed] += 1
+@app.route('/upload', methods=['POST'])
+def upload_file():
+    if 'file' not in request.files:
+        return jsonify({'message': 'Nenhum arquivo enviado'}), 400
+    file = request.files['file']
+    if file.filename == '':
+        return jsonify({'message': 'Nenhum arquivo selecionado'}), 400
+    if file and allowed_file(file.filename):
 
-    max_count = max(sentiment_count.values())
-    most_common_sentiments = [sentiment for sentiment, count in sentiment_count.items() if count == max_count]
-    return most_common_sentiments
+        if not os.path.exists(app.config['UPLOAD_FOLDER']):
+            os.makedirs(app.config['UPLOAD_FOLDER'])
 
-def main():
-    # Carregar e processar o arquivo JSON
-    data = load_json(file_path)
+        filename = os.path.join(app.config['UPLOAD_FOLDER'], file.filename)
+        file.save(filename)
 
-    # Analisar os comentários e atualizar o campo 'analyzed' e transformar em uma lista de objetos
-    updated_data = analyze_comments(data)
-    updated_data_json = json.loads(updated_data)
+        destination_dictionary = read_xlsx_and_create_dictionary(filename)
+        write_json(json_data_destination, destination_dictionary)
 
-    # Função para ver qual ou quais são os sentimentos que mais apareceram
-    sentiment = sentiment_analysis_feedback(updated_data_json)
+        return jsonify(destination_dictionary)
 
-    result = {
-        'comments': updated_data_json,
-        'most_common_sentiments': sentiment,
-        'bsf': 'teste',
-    }
+    return jsonify({'message': 'Tipo de arquivo inválido'}), 400
 
-    return json.dumps(result, ensure_ascii=False, indent=4)
+@app.route('/json_data', methods=['GET'])
+def json_data():
+    return load_json(json_data_destination)
 
-print(main())
+if __name__ == '__main__':
+    app.run(debug=True)
 
 
 
