@@ -1,5 +1,6 @@
 import React, { useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
 const Home = () => {
     const [selectedFile, setSelectedFile] = useState(null);
@@ -9,7 +10,7 @@ const Home = () => {
 
     const handleFileChange = (event) => {
         const file = event.target.files[0];
-        if (file && file.type === 'text/xlsx') {
+        if (file && file.type === 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet') {
             setSelectedFile(file);
             console.log('Arquivo XLSX selecionado:', file);
         } else {
@@ -34,28 +35,40 @@ const Home = () => {
         event.preventDefault();
         event.stopPropagation();
         setDragActive(false);
-
+    
         if (event.dataTransfer.files && event.dataTransfer.files[0]) {
             const file = event.dataTransfer.files[0];
-            if (file.type === 'text/xlsx') {
+            console.log('Tipo de arquivo:', file.type);  
+            if (file.type === 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet') {
                 setSelectedFile(file);
-                console.log('Arquivo xlsx arrastado:', file);
+                console.log('Arquivo XLSX arrastado:', file);
             } else {
                 setSelectedFile(null);
                 alert('Por favor, arraste apenas um arquivo XLSX.');
             }
         }
     };
-
+    
     const handleButtonClick = () => {
         inputRef.current.click();
     };
 
-    const handleContinueClick = () => {
+    const handleContinueClick = async () => {
         if (selectedFile) {
-            // @TODO: refatorar para passar o arquivo .XLSX para o backend, transformar em JSON e processar os dados de locais e distâncias.
+            const formData = new FormData();
+            formData.append('file', selectedFile);
 
-            navigate('/dashboard');
+            try {
+                await axios.post('http://127.0.0.1:5000/upload', formData, {
+                    headers: {
+                        'Content-Type': 'multipart/form-data',
+                    },
+                });
+                navigate('/dashboard');
+            } catch (error) {
+                console.error('Erro ao enviar o arquivo:', error);
+                alert(`Erro ao enviar o arquivo. ${error}`);
+            }
         } else {
             console.log('Nenhum arquivo selecionado.');
         }

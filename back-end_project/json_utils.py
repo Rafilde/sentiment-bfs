@@ -7,5 +7,5 @@ def load_json(file_path):
 
 def write_json(file_path, data):
     with open(file_path, 'w', encoding="utf-8") as file:
-        return json.dump(data, file, indent=4, ensure_ascii=False)
+        json.dump(data, file, indent=4, ensure_ascii=False)
 
