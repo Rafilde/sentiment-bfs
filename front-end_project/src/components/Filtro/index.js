@@ -2,7 +2,7 @@ import React from 'react';
 
 const Filters = () => {
   return (
-    <div className="mt-10 mb-4">
+    <div className="mb-4">
       <label htmlFor="product-select" className="block text-textcolor mb-2">Selecione um produto:</label>
       <div className="flex gap-5">
         <select
