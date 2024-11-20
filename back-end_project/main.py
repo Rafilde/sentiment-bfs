@@ -1,12 +1,13 @@
 import json
 import google.generativeai as genai
 from flask import Flask, jsonify
-from json_utils import load_json
+from json_utils import load_json, write_json
 from text_analysis import sentiment_analysis_feedback, analyze_comments, analysis_of_the_most_common_words
-from bfs import bfs_execution
+from bfs import execution_graph
 
 # Caminho do arquivo JSON
-file_path = 'event_feedback.json'
+file_path = 'candy_comments.json'
+comments_file_path = 'comments.json'
 
 app = Flask(__name__)
 
@@ -17,6 +18,10 @@ def process_data():
     # Analisar os comentários e atualizar o campo 'analyzed' e transformar em uma lista de objetos
     updated_data = analyze_comments(data)
     updated_data_json = json.loads(updated_data)
+
+    word_graph = execution_graph(updated_data_json)
+    # Salvar o grafo de comentários em outro arquivo JSON
+    write_json(comments_file_path, word_graph)
 
     # Função para ver qual ou quais são os sentimentos que mais apareceram
     sentiment = sentiment_analysis_feedback(updated_data_json)
@@ -30,6 +35,12 @@ def process_data():
     }
 
     return result
+
+@app.route('/comments', methods=['GET'])
+def get_comments():
+    with open(comments_file_path, 'r') as comments_file:
+        comments = json.load(comments_file)
+    return jsonify(comments)
 
 @app.route('/feedback', methods=['GET'])
 def get_feedback():
