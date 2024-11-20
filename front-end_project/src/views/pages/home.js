@@ -1,9 +1,11 @@
 import React, { useState, useRef } from 'react';
+import {useNavigate } from 'react-router-dom';
 
 const Home = () => {
     const [selectedFile, setSelectedFile] = useState(null);
     const [dragActive, setDragActive] = useState(false);
     const inputRef = useRef(null);
+    const navigate = useNavigate();
 
     const handleFileChange = (event) => {
         const file = event.target.files[0];
@@ -51,7 +53,9 @@ const Home = () => {
 
     const handleContinueClick = () => {
         if (selectedFile) {
-            // Aqui você poderia implementar a lógica de continuação
+            // @TODO: refatorar para passar o arquivo .CSV para o backend, transformar em JSON e refatorar a lógica de processamento com a IA, paralelamente, criar um nova página de "loading" em quanto o códiogo está sendo processado.
+
+            navigate('/dashboard')
         } else {
             console.log('Nenhum arquivo selecionado.');
         }
