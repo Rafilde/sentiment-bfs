@@ -1,13 +1,15 @@
-// JSON ESPERADO DO BACK-END
-{   
-    "cidades":[
-        {
-            "fortaleza": [
+//JSON ESPERADO DO BACK-END
+{
+    "fortaleza": [
                 {"nome":"caucaia", "distancia": 20},
                 {"nome":"icarai", "distancia":10},
                 {"nome":"eusebio", "distancia":15},
                 {"nome":"aquiraz", "distancia":30}
+            ],
+    "caucaia": [
+                {"nome":"fortaleza", "distancia": 20},
+                {"nome":"icapui", "distancia":10},
+                {"nome":"são paulo", "distancia":15},
+                {"nome":"aquiraz", "distancia":30}
             ]
-        }
-    ]
 }

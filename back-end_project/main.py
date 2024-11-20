@@ -3,8 +3,8 @@ import google.generativeai as genai
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 from json_utils import load_json, write_json
-from text_analysis import sentiment_analysis_feedback, analyze_comments, analysis_of_the_most_common_words
 from read_xlsx import read_xlsx_and_create_dictionary
+from graph import build_city_graph
 import os
 
 app = Flask(__name__)
@@ -34,7 +34,8 @@ def upload_file():
         file.save(filename)
 
         destination_dictionary = read_xlsx_and_create_dictionary(filename)
-        write_json(json_data_destination, destination_dictionary)
+        destination_dictionary_json = build_city_graph(destination_dictionary)
+        write_json(json_data_destination, destination_dictionary_json)
 
         return jsonify(destination_dictionary)
 
