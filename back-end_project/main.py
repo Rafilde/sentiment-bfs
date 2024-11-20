@@ -4,7 +4,8 @@ from flask import Flask, request, jsonify
 from flask_cors import CORS
 from json_utils import load_json, write_json
 from read_xlsx import read_xlsx_and_create_dictionary
-from graph import build_city_graph
+from graph import build_city_graph, dijkstra
+from IAnalyze import ia_query
 import os
 
 app = Flask(__name__)
@@ -41,9 +42,21 @@ def upload_file():
 
     return jsonify({'message': 'Tipo de arquivo inválido'}), 400
 
-@app.route('/json_data', methods=['GET'])
+@app.route('/json_data_graph', methods=['GET'])
 def json_data():
     return load_json(json_data_destination)
+
+@app.route('/json_data_dijkstra', methods=['GET'])
+def json_data_dijkstra_result():
+    graph = load_json(json_data_destination)
+    result = dijkstra(graph, 'São Paulo', 'Salvador')
+
+    locations = result['caminho']
+    ia_text = ia_query(locations)
+
+    result['ia_description'] = ia_text
+
+    return jsonify(result)
 
 if __name__ == '__main__':
     app.run(debug=True)
