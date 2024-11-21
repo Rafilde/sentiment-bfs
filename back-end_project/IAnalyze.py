@@ -25,13 +25,23 @@ model = genai.GenerativeModel(
   model_name="gemini-1.5-pro",
   generation_config=generation_config,
   safety_settings=safe_security,
-  system_instruction="Você receberá um JSON contendo uma lista de comentários, cada um com um id, comment, e um campo analyzed (onde o valor será inicialmente 'null'). O objetivo é analisar o conteúdo de cada comentário e determinar o sentimento geral de cada um, com base nos seguintes critérios:\n\nPositivo: O comentário demonstra emoções positivas, como alegria, satisfação ou aprovação.\nNeutro: O comentário é informativo ou objetivo, sem expressar sentimentos claros ou emocionais.\nNegativo: O comentário transmite insatisfação, crítica, tristeza ou outras emoções negativas.\nVocê deve retornar um JSON com os mesmos id dos comentários e os mesmos comentários, mas com o campo analyzed preenchido com o valor do sentimento detectado: 'Positivo', 'Neutro' ou 'Negativo'. O JSON deve ser retornado como uma única string em uma única linha"
+  system_instruction="""
+  Você receberá um array de locais (podem ser cidades, estados, ou outros pontos de interesse). Para cada local do array, forneça uma descrição detalhada do que os visitantes podem fazer nesse local, incluindo atrações turísticas populares, atividades culturais, naturais e gastronômicas, eventos locais, e outros pontos de interesse que tornam esse lugar único.
+
+  A descrição deve ser clara, envolvente e focada em informar o que há de interessante para um visitante em cada cidade ou região. Se necessário, use informações sobre a história e a cultura local para enriquecer a resposta.
+
+  Responda com uma descrição para cada um desses locais.
+  """
 )
 
 chat_session = model.start_chat(
   history=[]
 )
 
-def ia_query(text):
+
+def ia_query(locations_array):
+  text = f"Os locais são: {', '.join(locations_array)}"
+
   response = chat_session.send_message(text)
+
   return response.text
