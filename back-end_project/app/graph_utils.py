@@ -9,7 +9,7 @@ def create_graph(data):
     Cria um grafo utilizando os dados fornecidos.
 
     Args:
-    - data (dict): Dicionário onde cada chave é uma cidade e os valores são listas de conexões.
+    - data: Dicionário onde cada chave é uma cidade e os valores são listas de conexões.
 
     Returns:
     - G (networkx.Graph): Grafo criado.
@@ -62,7 +62,11 @@ def draw_graph_interactive(G):
 
     def move_police(i, path):
         """
-        Define a rota para a viatura.
+        Define a rota que a viatura deve seguir.
+
+        Args:
+        - i (int): Índice da viatura.
+        - path (list): Caminho a ser seguido pela viatura.
         """
         current_paths[i] = path
         if len(path) > 1:
@@ -74,7 +78,10 @@ def draw_graph_interactive(G):
 
     def start_random_movement(i):
         """
-        Inicia o movimento aleatório para a viatura selecionada.
+        Inicia o movimento aleatório de uma viatura.
+
+        Args:
+        - i (int): Índice da viatura.
         """
         if police_states[i] == 'random':
             neighbors = list(G.neighbors(police_positions[i]))
@@ -85,6 +92,12 @@ def draw_graph_interactive(G):
                 move_police(i, path)
 
     def on_click(event):
+        """
+        Identifica qual vértice foi clicado e aciona a função perseguição de crime.
+
+        Args:
+        - event: Evento de clique do mouse.
+        """
         for node, (x, y) in pos.items():
             if (event.xdata - x)**2 + (event.ydata - y)**2 < 0.01:
                 if node != prision:
@@ -92,7 +105,10 @@ def draw_graph_interactive(G):
 
     def handle_crime(node):
         """
-        Envia a viatura mais próxima para o crime.
+        Envia a viatura mais próxima para responder a um crime.
+
+        Args:
+        - node: Nó da cidade onde ocorreu o crime.
         """
         distances = []
         for i in range(2):
@@ -110,6 +126,12 @@ def draw_graph_interactive(G):
                 pending_crime_targets[police_index] = node
 
     def update(frame):
+        """
+        Atualiza a posição das viaturas no quadro da animação.
+
+        Args:
+        - frame: Índice do quadro atual da animação.
+        """
         for i in range(len(police_positions)):
             new_position = None
 
