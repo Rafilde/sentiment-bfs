@@ -3,6 +3,25 @@ import matplotlib.pyplot as plt
 import random
 import numpy as np
 from matplotlib.animation import FuncAnimation
+from matplotlib.offsetbox import OffsetImage, AnnotationBbox
+
+police_img = plt.imread('app/police_car.png')
+
+
+def add_image(ax, img, position, zoom=0.1):
+    """
+    Adiciona uma imagem em uma posição específica no gráfico.
+
+    Args:
+    - ax: Eixo onde a imagem será desenhada.
+    - img: Imagem a ser adicionada.
+    - position: Coordenadas (x, y) onde a imagem será posicionada.
+    - zoom: Tamanho relativo da imagem.
+    """
+    
+    imagebox = OffsetImage(img, zoom=zoom)
+    ab = AnnotationBbox(imagebox, position, frameon=False)
+    ax.add_artist(ab)
 from .algorithm import dijkstra
 
 def create_graph(data):
@@ -48,6 +67,17 @@ def draw_graph_interactive(G):
     nx.draw_networkx_nodes(G, pos, nodelist=[prision], node_color='#F2F2F2', node_size=800, ax=ax)
 
     police_positions = [random.choice([node for node in nodes if node != prision]) for _ in range(2)]
+    police_images = []  # Lista para armazenar as imagens das viaturas
+
+    police_images = []
+    for i in range(2):
+        x, y = pos[police_positions[i]]  # Coordenadas do nó inicial da viatura
+        imagebox = OffsetImage(police_img, zoom=0.02)
+        ab = AnnotationBbox(imagebox, (x, y), frameon=False)
+        ax.add_artist(ab)
+        police_images.append(ab)  # Armazena o objeto AnnotationBbox
+
+
     police_states = ['random', 'random']
     pending_crime_paths = [None, None]
     pending_crime_targets = [None, None] 
@@ -125,14 +155,7 @@ def draw_graph_interactive(G):
             if len(path_to_crime) > 1:
                 police_states[police_index] = 'pending_to_crime'
                 pending_crime_targets[police_index] = node
-
     def update(frame):
-        """
-        Atualiza a posição das viaturas no quadro da animação.
-
-        Args:
-        - frame: Índice do quadro atual da animação.
-        """
         for i in range(len(police_positions)):
             new_position = None
 
@@ -143,7 +166,7 @@ def draw_graph_interactive(G):
             elif directions[i] is not None and current_steps[i] >= num_steps_list[i]:
                 if len(current_paths[i]) > 1:
                     police_positions[i] = current_paths[i][1]
-                    current_paths[i] = current_paths[i][1:] 
+                    current_paths[i] = current_paths[i][1:]
 
                     if len(current_paths[i]) > 1:
                         move_police(i, current_paths[i])
@@ -169,14 +192,19 @@ def draw_graph_interactive(G):
                         start_random_movement(i)
 
             if new_position is not None:
-                police_scatters[i].set_offsets([new_position])
+                # Remove o AnnotationBbox antigo
+                police_images[i].remove()
 
-            if police_states[i] in ['to_crime', 'to_prision', 'pending_to_crime']:
-                police_scatters[i].set_color('red')
-            else:
-                police_scatters[i].set_color('gray')
+                # Cria um novo AnnotationBbox na nova posição
+                imagebox = OffsetImage(police_img, zoom=0.02)
+                ab = AnnotationBbox(imagebox, new_position, frameon=False)
+                ax.add_artist(ab)
+                police_images[i] = ab  # Atualiza a referência ao novo AnnotationBbox
 
-        return police_scatters
+        return police_images
+
+
+
 
     fig.canvas.mpl_connect('button_press_event', on_click)
 
