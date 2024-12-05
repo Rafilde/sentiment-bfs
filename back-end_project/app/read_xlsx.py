@@ -4,7 +4,6 @@ import pandas as pd
 from .json_utils import write_json
 
 def read_xlsx(file, upload_folder='uploads', saved_file_name='entrada.json'):
-    file_path = os.path.join(upload_folder, saved_file_name)
 
     if not os.path.exists(upload_folder):
         os.makedirs(upload_folder)

@@ -3,6 +3,7 @@ import matplotlib.pyplot as plt
 import random
 import numpy as np
 from matplotlib.animation import FuncAnimation
+from .algorithm import dijkstra
 
 def create_graph(data):
     """
@@ -114,7 +115,7 @@ def draw_graph_interactive(G):
         for i in range(2):
             if police_states[i] == 'random':
                 try:
-                    path = nx.shortest_path(G, source=police_positions[i], target=node, weight='weight')
+                    path = dijkstra(G, source=police_positions[i], target=node, weight='weight')
                     distances.append((len(path), i, path))
                 except nx.NetworkXNoPath:
                     continue
@@ -149,13 +150,13 @@ def draw_graph_interactive(G):
                     else:
                         if police_states[i] == 'pending_to_crime':
                             next_target = pending_crime_targets[i]
-                            path_to_crime = nx.shortest_path(G, source=police_positions[i], target=next_target, weight='weight')
+                            path_to_crime = dijkstra(G, source=police_positions[i], target=next_target, weight='weight')
                             police_states[i] = 'to_crime'
                             move_police(i, path_to_crime)
                             pending_crime_targets[i] = None
 
                         elif police_states[i] == 'to_crime':
-                            path_to_prision = nx.shortest_path(G, source=police_positions[i], target=prision, weight='weight')
+                            path_to_prision = dijkstra(G, source=police_positions[i], target=prision, weight='weight')
                             police_states[i] = 'to_prision'
                             move_police(i, path_to_prision)
 
